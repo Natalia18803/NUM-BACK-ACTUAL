@@ -23,7 +23,7 @@ app.use(express.json());
 app.use(cors());
 
 // 1. Indicar la carpeta de archivos estáticos
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public', 'dist')));
 
 // Conectar a MongoDB
 conectarMongo();
@@ -31,11 +31,11 @@ conectarMongo();
 // Seed usuario admin para desarrollo
 const seedAdmin = async () => {
   try {
-    const adminEmail = 'admin@numerologia.com';
+    const adminEmail = 'admin@admin.com';
     const existeAdmin = await Usuario.findOne({ email: adminEmail });
     if (!existeAdmin) {
       const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash('admin123', salt);
+      const hashedPassword = await bcrypt.hash('999999999', salt);
       const adminUser = new Usuario({
         nombre: 'Admin Master',
         email: adminEmail,
@@ -45,7 +45,7 @@ const seedAdmin = async () => {
         rol: 'admin'
       });
       await adminUser.save();
-      console.log('✅ Usuario admin creado:', adminEmail, '- Pass: admin123');
+      console.log('✅ Usuario admin creado:', adminEmail, '- Pass: 999999999');
     } else {
       console.log('ℹ️ Usuario admin ya existe.');
     }
@@ -196,7 +196,7 @@ app.get('/api/health', async (req, res) => {
 // 2. Manejar rutas del Frontend (Importante para SPAs como React o Vue)
 // Esto asegura que si refrescas la página en /dashboard, el backend devuelva el index.html
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'dist', 'index.html'));
 });
 
 // Puerto del servidor
