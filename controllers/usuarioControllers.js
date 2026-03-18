@@ -54,6 +54,18 @@ export const login = async (req, res) => {
     }
 };
 
+export const getPerfil = async (req, res) => {
+    try {
+        const usuario = await Usuario.findById(req.usuario.id).select('-password');
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+        res.json(usuario);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 // --- RUTAS DE GESTIÓN (CRUD) ---
 
 export const getAllUsuarios = async (req, res) => {

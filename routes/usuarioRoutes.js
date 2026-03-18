@@ -27,6 +27,9 @@ router.post('/login', usuarioControllers.login);
 // A partir de aquí, todas las rutas pasan por la validación de Token
 router.use(validarJWT);
 
+// Perfil de usuario autenticado
+router.get('/perfil', usuarioControllers.getPerfil);
+
 // ==========================================
 //  RUTAS DE USUARIOS - SOLO ADMIN
 // ==========================================
