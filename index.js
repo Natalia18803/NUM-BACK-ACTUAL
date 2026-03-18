@@ -20,7 +20,15 @@ const app = express();
 
 // Middleware para parsear JSON
 app.use(express.json());
-app.use(cors());
+
+// Configuración de CORS dinámica
+const corsOptions = {
+    origin: process.env.FRONTEND_URL || '*', // Permite el origen del frontend o todos en desarrollo
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204
+};
+app.use(cors(corsOptions));
 
 // 1. Indicar la carpeta de archivos estáticos
 app.use(express.static(path.join(__dirname, 'public', 'dist')));
