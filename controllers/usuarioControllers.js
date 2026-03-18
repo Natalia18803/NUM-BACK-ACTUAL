@@ -2,8 +2,8 @@ import Usuario from '../models/usuario.js';
 import jwt from 'jsonwebtoken';
 
 // Helper para generar el Token (Asegúrate de tener JWT_SECRET en tu .env)
-const generarToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET || 'secreto-temporal', {
+const generarToken = (id, rol) => {
+    return jwt.sign({ id, rol }, process.env.JWT_SECRET || 'secreto-temporal', {
         expiresIn: '30d'
     });
 };
@@ -22,12 +22,12 @@ export const registro = async (req, res) => {
         const usuario = new Usuario({ nombre, email, password, fecha_nacimiento });
         await usuario.save();
 
-        const token = generarToken(usuario._id);
+        const token = generarToken(usuario._id, usuario.rol);
 
         res.status(201).json({
             message: 'Usuario registrado exitosamente',
             token,
-            usuario: { id: usuario._id, nombre, email }
+            usuario: { id: usuario._id, nombre, email, rol: usuario.rol }
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -36,18 +36,31 @@ export const registro = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, rol: rolReclamado } = req.body;
         const usuario = await Usuario.findOne({ email });
 
         if (!usuario || !(await usuario.compararPassword(password))) {
             return res.status(401).json({ error: 'Credenciales inválidas' });
         }
 
-        const token = generarToken(usuario._id);
+        // Validación de seguridad: Verificar si el rol coincide con la selección del frontend
+        // Esto evita que un usuario entre al panel de admin solo por presionar un botón
+        if (rolReclamado && usuario.rol !== rolReclamado) {
+            return res.status(403).json({ 
+                error: `Acceso denegado. Esta cuenta no tiene permisos de ${rolReclamado}.` 
+            });
+        }
+
+        const token = generarToken(usuario._id, usuario.rol);
         res.json({
             message: 'Login exitoso',
             token,
-            usuario: { id: usuario._id, nombre: usuario.nombre, email: usuario.email }
+            usuario: { 
+                id: usuario._id, 
+                nombre: usuario.nombre, 
+                email: usuario.email,
+                rol: usuario.rol 
+            }
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
