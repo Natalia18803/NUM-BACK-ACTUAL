@@ -26,7 +26,11 @@ const corsOptions = {
     origin: process.env.FRONTEND_URL || '*', // Permite el origen del frontend o todos en desarrollo
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
+<<<<<<< HEAD
+    optionsSuccessStatus: 204, allowedHeaders: ['Content-Type', 'x-token', 'Authorization']
+=======
     optionsSuccessStatus: 204
+>>>>>>> c6af92142aa683254b4a2af7bea68ab9c93c1149
 };
 app.use(cors(corsOptions));
 
@@ -61,7 +65,12 @@ const seedAdmin = async () => {
     console.error('Error en seed admin:', error);
   }
 };
+<<<<<<< HEAD
 seedAdmin();
+=======
+// Ocultamos la ejecución en producción para evitar regeneración o problemas
+// seedAdmin();
+>>>>>>> c6af92142aa683254b4a2af7bea68ab9c93c1149
 
 // Helper para generar token (ya no se usa aquí pero lo dejamos si es necesario para el index)
 const generarToken = (id) => {
@@ -83,7 +92,11 @@ app.use('/api/pagos', pagoRoutes);
 app.use('/api/lecturas', lecturaRoutes);
 
 // Ruta de prueba
+<<<<<<< HEAD
 app.get('/', (req, res) => {
+=======
+app.get('/api', (req, res) => {
+>>>>>>> c6af92142aa683254b4a2af7bea68ab9c93c1149
     res.send('API de Numerologia funcionando - Registro sin token requerido');
 });
 

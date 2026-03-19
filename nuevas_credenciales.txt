@@ -12,7 +12,11 @@ Rol: admin
 -----------------------------------
 Nombre: Usuario Test 1
 Email: user_test1@test.com
+<<<<<<< HEAD
+Password: user_test1@test.com
+=======
 Password: user_password_1
+>>>>>>> c6af92142aa683254b4a2af7bea68ab9c93c1149
 Rol: usuario
 -----------------------------------
 Nombre: Usuario Test 2

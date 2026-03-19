@@ -36,18 +36,29 @@ export const registro = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
+<<<<<<< HEAD
+        const { email, password, rol: rolReclamado } = req.body; if (!rolReclamado) return res.status(200).json({ message: 'Login exitoso', token: generarToken(usuario._id, usuario.rol), usuario: { id: usuario._id, nombre: usuario.nombre, email: usuario.email, rol: usuario.rol } });
+=======
         const { email, password, rol: rolReclamado } = req.body;
+>>>>>>> c6af92142aa683254b4a2af7bea68ab9c93c1149
         const usuario = await Usuario.findOne({ email });
 
         if (!usuario || !(await usuario.compararPassword(password))) {
             return res.status(401).json({ error: 'Credenciales inválidas' });
         }
 
+<<<<<<< HEAD
         // Validación de seguridad: Verificar si el rol coincide con la selección del frontend
         // Esto evita que un usuario entre al panel de admin solo por presionar un botón
         if (rolReclamado && usuario.rol !== rolReclamado) {
             return res.status(403).json({ 
                 error: `Acceso denegado. Esta cuenta no tiene permisos de ${rolReclamado}.` 
+=======
+        // Validación estricta del rol seleccionado en el front vs la DB
+        if (rolReclamado && usuario.rol !== rolReclamado) {
+            return res.status(403).json({ 
+                error: `Acceso denegado. No tienes permisos de '${rolReclamado}'.` 
+>>>>>>> c6af92142aa683254b4a2af7bea68ab9c93c1149
             });
         }
 
