@@ -34,14 +34,7 @@ export const registro = async (req, res) => {
     }
 };
 
-export const login = async (req, res) => {
-    try {
-<<<<<<< HEAD
-        const { email, password, rol: rolReclamado } = req.body; if (!rolReclamado) return res.status(200).json({ message: 'Login exitoso', token: generarToken(usuario._id, usuario.rol), usuario: { id: usuario._id, nombre: usuario.nombre, email: usuario.email, rol: usuario.rol } });
-=======
-        const { email, password, rol: rolReclamado } = req.body;
->>>>>>> c6af92142aa683254b4a2af7bea68ab9c93c1149
-        const usuario = await Usuario.findOne({ email });
+export const login = async (req, res) => { try { const { email, password, rol: rolReclamado } = req.body; const usuario = await Usuario.findOne({ email });
 
         if (!usuario || !(await usuario.compararPassword(password))) {
             return res.status(401).json({ error: 'Credenciales inválidas' });
@@ -143,3 +136,5 @@ export const deleteUsuario = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+
