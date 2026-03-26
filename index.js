@@ -109,19 +109,22 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dist', 'index.html'));
 });
 
-// Puerto del servidor
-const PORT = process.env.PORT || 3000;
+// Exportar la app para Vercel Serverless Functions
+export default app;
 
-// Iniciar servidor
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
-    console.log('');
-    console.log('RUTAS DISPONIBLES EN /api/auth (y /api/usuarios):');
-    console.log('  POST /api/auth/registro - Registro de usuario');
-    console.log('  POST /api/auth/login    - Login de usuario');
-    console.log('  GET  /api/auth/perfil   - Obtener usuario autenticado');
-    console.log('');
-    console.log('OTRAS RUTAS:');
-    console.log('  /api/pagos/*            - Rutas de pagos');
-    console.log('  /api/lecturas/*         - Rutas de lecturas');
-});
+// Iniciar servidor solo si NO estamos en Vercel
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`Servidor corriendo en http://localhost:${PORT}`);
+        console.log('');
+        console.log('RUTAS DISPONIBLES EN /api/auth (y /api/usuarios):');
+        console.log('  POST /api/auth/registro - Registro de usuario');
+        console.log('  POST /api/auth/login    - Login de usuario');
+        console.log('  GET  /api/auth/perfil   - Obtener usuario autenticado');
+        console.log('');
+        console.log('OTRAS RUTAS:');
+        console.log('  /api/pagos/*            - Rutas de pagos');
+        console.log('  /api/lecturas/*         - Rutas de lecturas');
+    });
+}
