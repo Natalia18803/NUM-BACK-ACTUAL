@@ -1,5 +1,33 @@
 import Usuario from '../models/usuario.js';
 import jwt from 'jsonwebtoken';
+import axios from 'axios';
+
+// Helper para enviar email usando Brevo
+const enviarEmailBrevo = async (destinatario, asunto, htmlContent) => {
+  try {
+    const response = await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      {
+        sender: {
+          name: "Numerología ✨",
+          email: process.env.EMAIL_USER,
+        },
+        to: [{ email: destinatario }],
+        subject: asunto,
+        htmlContent: htmlContent,
+      },
+      {
+        headers: {
+          "api-key": process.env.BREVO_API_KEY,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error enviando email con Brevo:", error?.response?.data || error.message);
+  }
+};
 
 // Helper para generar el Token (Asegúrate de tener JWT_SECRET en tu .env)
 const generarToken = (id, rol) => {
@@ -22,6 +50,18 @@ export const registro = async (req, res) => {
         const usuario = new Usuario({ nombre, email, password, fecha_nacimiento });
         await usuario.save();
 
+        // Enviar correo de bienvenida
+        const htmlContent = `
+            <h2>¡Bienvenido/a a la Matriz de Numerología, ${nombre}! ✨</h2>
+            <p>Estamos muy felices de tenerte con nosotros. Has creado tu cuenta exitosamente.</p>
+            <p>Ingresa a la plataforma para conocer tu número de vida y descubrir lo que los astros tienen para ti.</p>
+            <br/>
+            <p>Saludos,</p>
+            <p>El equipo de Numerología</p>
+        `;
+        // No bloqueamos la respuesta, se envía asíncrono en background
+        enviarEmailBrevo(email, "¡Bienvenido a la Matriz de Numerología! ✨", htmlContent);
+
         const token = generarToken(usuario._id, usuario.rol);
 
         res.status(201).json({
@@ -40,18 +80,10 @@ export const login = async (req, res) => { try { const { email, password, rol: r
             return res.status(401).json({ error: 'Credenciales inválidas' });
         }
 
-<<<<<<< HEAD
-        // Validación de seguridad: Verificar si el rol coincide con la selección del frontend
-        // Esto evita que un usuario entre al panel de admin solo por presionar un botón
-        if (rolReclamado && usuario.rol !== rolReclamado) {
-            return res.status(403).json({ 
-                error: `Acceso denegado. Esta cuenta no tiene permisos de ${rolReclamado}.` 
-=======
         // Validación estricta del rol seleccionado en el front vs la DB
         if (rolReclamado && usuario.rol !== rolReclamado) {
             return res.status(403).json({ 
                 error: `Acceso denegado. No tienes permisos de '${rolReclamado}'.` 
->>>>>>> c6af92142aa683254b4a2af7bea68ab9c93c1149
             });
         }
 
