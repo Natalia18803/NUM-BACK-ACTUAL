@@ -15,10 +15,6 @@ export default defineConfig({
       )
     })
   ],
-  build: {
-    outDir: 'public/dist',
-    emptyOutDir: true
-  },
   server: {
     port: 5173, // puerto frontend
     proxy: {
