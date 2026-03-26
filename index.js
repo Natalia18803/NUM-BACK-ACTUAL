@@ -31,8 +31,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// 1. Indicar la carpeta de archivos estáticos
-app.use(express.static(path.join(__dirname, 'public', 'dist')));
+// El app.use de archivos estáticos se movió al final (solo para local)
 
 // Conectar a MongoDB
 conectarMongo();
@@ -104,10 +103,14 @@ app.get('/api/health', async (req, res) => {
 });
 
 // 2. Manejar rutas del Frontend (Importante para SPAs como React o Vue)
-// Esto asegura que si refrescas la página en /dashboard, el backend devuelva el index.html
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'dist', 'index.html'));
-});
+// En Vercel, la plataforma se encarga de servir los archivos estáticos desde dist/
+// por lo que sólo activamos esto en desarrollo o si no estamos en Vercel
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+    app.use(express.static(path.join(__dirname, 'public', 'dist')));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, 'public', 'dist', 'index.html'));
+    });
+}
 
 // Exportar la app para Vercel Serverless Functions
 export default app;
