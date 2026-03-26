@@ -14,8 +14,11 @@ export default defineConfig({
         new URL('./src/quasar-variables.sass', import.meta.url)
       )
     })
-  
   ],
+  build: {
+    outDir: 'public/dist',
+    emptyOutDir: true
+  },
   server: {
     port: 5173, // puerto frontend
     proxy: {
